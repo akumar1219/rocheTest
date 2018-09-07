@@ -1,0 +1,7 @@
+1) swarm properties defined @
+    https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/content/configuration_properties.html
+
+2) To build
+   # gradle clean wildfly-swarm-package
+3) To run (confirm the name from build dir)
+   # java -jar ./build/libs/rest_jar-swarm.jar

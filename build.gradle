@@ -1,0 +1,56 @@
+buildscript {
+    version = '2018.5.0'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+        classpath "org.wildfly.swarm:wildfly-swarm-gradle-plugin:$version"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'wildfly-swarm'
+apply plugin: 'application'
+
+mainClassName = 'com.roche.test.DeployRest'
+
+swarm {
+    properties {
+        swarm.http.port = 8888
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url 'https://maven.repository.redhat.com/nexus/content/repositories/thirdparty-releases/'
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.wildfly.swarm:bom-all:$version"
+    }
+}
+
+dependencies {
+    compile "org.wildfly.swarm:jaxrs"
+    compile group: 'org.json', name: 'json', version: '20090211'
+}
+
+
+jar {
+    baseName = 'roche_rest'
+    version =  '0.0.1'
+}
+
+task runJar(dependsOn:jar) << {
+    javaexec {
+        main="-jar"; args "./build/libs/rest_jar-swarm.jar"
+    }
+}
